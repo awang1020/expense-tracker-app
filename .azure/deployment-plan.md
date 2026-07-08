@@ -166,10 +166,16 @@ If Cosmos free tier is unavailable and the user prefers strictly $0/month, swap:
 
 - [x] Skeleton written
 - [x] Plan finalized
-- [ ] IaC generated (`infra/main.bicep`, `main.parameters.json`, `azure.yaml`)
-- [ ] API generated (`api/` with 3 Functions)
-- [ ] SWA config (`staticwebapp.config.json`)
-- [ ] Client refactor (`src/lib/api.ts`, `src/hooks/useAuth.ts`, `src/lib/sync.ts`, store additions, Layout auth badge, `ImportPrompt`)
-- [ ] GitHub Actions workflow
-- [ ] Build + tests still green
-- [ ] Ready for Validation
+- [x] IaC generated (`infra/main.bicep`, `resources.bicep`, `main.parameters.json`, `azure.yaml`)
+- [x] API generated (`api/` with 2 Functions — `GET/PUT /api/data`; `/api/me` deferred to native `/.auth/me`)
+- [x] SWA config (`staticwebapp.config.json`)
+- [x] Client refactor (`src/lib/api.ts`, `src/hooks/useAuth.ts`, `src/lib/sync.ts`, store `replaceAll` + sync state, `Layout` auth badge)
+- [x] GitHub Actions workflow (`.github/workflows/ci-cd.yml`)
+- [x] Build + tests still green (SPA build clean, API tsc clean, 33/33 Vitest tests pass)
+- [x] Bicep `az bicep build` compiles clean
+- [x] Ready for Validation
+
+**Not done (by design — user runs these):**
+- `git commit` and `git push` (initial commit — repo is initialized, 58 files staged)
+- `azd auth login && azd up` (needs user's Azure credentials + subscription context)
+- Fetching SWA deploy token and setting the GitHub secret `AZURE_STATIC_WEB_APPS_API_TOKEN`
