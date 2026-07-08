@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "COSMOS_ENDPOINT": "",
+    "COSMOS_DATABASE": "expense-tracker",
+    "COSMOS_CONTAINER": "userData"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}

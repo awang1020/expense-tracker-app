@@ -1,0 +1,22 @@
+{
+  "name": "expense-tracker-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for the Expense Tracker Static Web App.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "func start",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^4.1.1",
+    "@azure/functions": "^4.5.1",
+    "@azure/identity": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.5.4"
+  }
+}
