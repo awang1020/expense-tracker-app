@@ -1,7 +1,8 @@
 # Deployment Plan — Expense Tracker
 
-**Status:** Ready for Validation
+**Status:** DEPLOYED ✅
 **Created:** 2026-07-08
+**Deployed:** 2026-07-08
 **Owner:** antoinewang
 
 ---
@@ -168,14 +169,37 @@ If Cosmos free tier is unavailable and the user prefers strictly $0/month, swap:
 - [x] Plan finalized
 - [x] IaC generated (`infra/main.bicep`, `resources.bicep`, `main.parameters.json`, `azure.yaml`)
 - [x] API generated (`api/` with 2 Functions — `GET/PUT /api/data`; `/api/me` deferred to native `/.auth/me`)
-- [x] SWA config (`staticwebapp.config.json`)
+- [x] SWA config (`public/staticwebapp.config.json` — ships via Vite public assets)
 - [x] Client refactor (`src/lib/api.ts`, `src/hooks/useAuth.ts`, `src/lib/sync.ts`, store `replaceAll` + sync state, `Layout` auth badge)
 - [x] GitHub Actions workflow (`.github/workflows/ci-cd.yml`)
 - [x] Build + tests still green (SPA build clean, API tsc clean, 33/33 Vitest tests pass)
 - [x] Bicep `az bicep build` compiles clean
-- [x] Ready for Validation
+- [x] `azd up` succeeded
+- [x] SWA API token stored as GitHub secret `AZURE_STATIC_WEB_APPS_API_TOKEN`
+- [x] CI/CD workflow green end-to-end
+- [x] Live site health-checked: `/ → 200`, `/api/data → 401`, `/.auth/me → { clientPrincipal: null }`
+- [x] Cosmos data-plane RBAC verified for SWA managed identity
 
-**Not done (by design — user runs these):**
-- `git commit` and `git push` (initial commit — repo is initialized, 58 files staged)
-- `azd auth login && azd up` (needs user's Azure credentials + subscription context)
-- Fetching SWA deploy token and setting the GitHub secret `AZURE_STATIC_WEB_APPS_API_TOKEN`
+## 15. Live environment
+
+| | |
+|---|---|
+| **Site** | https://green-forest-0a478000f.7.azurestaticapps.net/ |
+| **GitHub repo** | https://github.com/awang1020/expense-tracker-app |
+| **Resource group** | `rg-expense-tracker-prod` |
+| **SWA** | `swa-expense-tracker-prod-qvv6brmjgpci6` (Standard tier) |
+| **Cosmos** | `cos-expense-tracker-prod-qvv6brmjgpci6` (Serverless, NoSQL) |
+| **Managed identity (SWA)** | `1c40876f-27ed-4940-a7b7-e8b8b932fa78` |
+| **Subscription** | `3457a8eb-7e08-42ff-aac0-1cbe32ffd332` (internal) |
+| **Region** | `eastus2` |
+
+## 16. Deviations from the original plan
+
+Internal Microsoft subscriptions block both SWA Free SKU and Cosmos free tier. Adjusted:
+- **SWA `Free` → `Standard`** (~$9/mo base). Adds staging environments and higher quotas.
+- **Cosmos DB free tier → Serverless capability.** Pay-per-RU (~$0.28 per million RUs). For personal use expected to cost cents/month.
+- Removed the `enableCosmosFreeTier` parameter (serverless works in every subscription type; simpler config).
+
+Two other CI-side adjustments after the first deploy:
+- Workflow uses `npm install` instead of `npm ci` (works around npm's cross-platform lock file bug with esbuild's optional per-platform binaries).
+- `staticwebapp.config.json` moved to `public/` so Vite copies it into `dist/`; `app_location: 'dist'` in the workflow so SWA/Oryx doesn't scan the entire repo root.
