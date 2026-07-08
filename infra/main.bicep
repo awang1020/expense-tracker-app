@@ -9,9 +9,6 @@ param environmentName string
 @description('Primary location for all resources.')
 param location string = 'eastus2'
 
-@description('Set to false if this subscription already has a Cosmos DB free-tier account.')
-param enableCosmosFreeTier bool = true
-
 var tags = { 'azd-env-name': environmentName }
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
@@ -29,7 +26,6 @@ module resources 'resources.bicep' = {
     tags: tags
     swaName: 'swa-${environmentName}-${resourceToken}'
     cosmosName: 'cos-${environmentName}-${resourceToken}'
-    enableCosmosFreeTier: enableCosmosFreeTier
   }
 }
 

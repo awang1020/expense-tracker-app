@@ -10,9 +10,6 @@ param swaName string
 @description('Cosmos DB account name.')
 param cosmosName string
 
-@description('Enable Cosmos DB free tier (only one per subscription).')
-param enableCosmosFreeTier bool
-
 // -------------------------
 // Static Web App
 // -------------------------
@@ -21,8 +18,8 @@ resource swa 'Microsoft.Web/staticSites@2023-01-01' = {
   location: location
   tags: union(tags, { 'azd-service-name': 'web' })
   sku: {
-    name: 'Free'
-    tier: 'Free'
+    name: 'Standard'
+    tier: 'Standard'
   }
   identity: {
     type: 'SystemAssigned'
@@ -47,7 +44,8 @@ resource swaAppSettings 'Microsoft.Web/staticSites/config@2023-01-01' = {
 }
 
 // -------------------------
-// Cosmos DB (NoSQL / SQL API)
+// Cosmos DB (NoSQL / SQL API) — Serverless
+// Works in every subscription type (including Microsoft internal subs where the Free tier is blocked).
 // -------------------------
 resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   name: cosmosName
@@ -56,7 +54,9 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
-    enableFreeTier: enableCosmosFreeTier
+    capabilities: [
+      { name: 'EnableServerless' }
+    ]
     consistencyPolicy: {
       defaultConsistencyLevel: 'Session'
     }
@@ -83,9 +83,6 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-05-15
   name: 'expense-tracker'
   properties: {
     resource: { id: 'expense-tracker' }
-    options: {
-      throughput: 1000
-    }
   }
 }
 

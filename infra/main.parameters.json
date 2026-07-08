@@ -7,9 +7,6 @@
     },
     "location": {
       "value": "${AZURE_LOCATION=eastus2}"
-    },
-    "enableCosmosFreeTier": {
-      "value": true
     }
   }
 }
