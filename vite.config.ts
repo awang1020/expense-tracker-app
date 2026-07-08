@@ -28,6 +28,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg}'],
+        // Never let the SW hijack SWA's auth or API routes — they need to hit the network,
+        // and /.auth/* returns a cross-origin 302 that a service-worker precache would otherwise
+        // eat, making "Sign in" look like it does nothing.
+        navigateFallbackDenylist: [/^\/\.auth\//, /^\/api\//],
       },
     }),
   ],
