@@ -33,7 +33,7 @@ jobs:
           cache: 'npm'
 
       - name: Install SPA dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Run tests
         run: npm test
@@ -42,7 +42,7 @@ jobs:
         run: npm run build
 
       - name: Install API dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
         working-directory: api
 
       - name: Deploy to Azure Static Web Apps
